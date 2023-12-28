@@ -1,0 +1,1377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Console Page</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://s2.webeventconsole.com/common/lib/font-awesome/4.7/css/font-awesome.min.css" />
+
+    <link rel="stylesheet" href="https://streamonhub.s3.amazonaws.com/static/lobby/css/responsivetemp.css" />
+    <link href="https://streamonhub.s3.amazonaws.com/static/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet"
+        type="text/css" />
+    <script src="https://web-broadcast.live-video.net/1.6.0/amazon-ivs-web-broadcast.js"></script>
+    <style>
+        /*body{background-color:#fafbfb;}*/
+
+        /* a:hover {
+            color: #ffffff;
+            text-decoration: none;
+        } */
+
+        .whitewrap {
+            background-color: #fafbfb;
+            padding-left: 2rem;
+            position: relative;
+        }
+
+        .whitewrap::after {
+            position: absolute;
+            content: "";
+            background: #fafbfb;
+            width: 14%;
+            height: 100%;
+            right: -40px;
+            top: 0;
+        }
+
+        .bluewrap {
+            position: relative;
+            background-color: #144475;
+            padding-left: 2rem;
+            padding-right: 2rem;
+            padding-top: 4rem;
+            border-radius: 40px 0px 0px 40px;
+        }
+
+        .bluewrap::after {
+            position: absolute;
+            content: "";
+            background: #144475;
+            height: 100%;
+            width: 36px;
+            right: -35px;
+            top: 0;
+        }
+
+        .blackwrap {
+            background-color: #1e242c;
+            padding-left: 2rem;
+            padding-right: 2rem;
+            padding-top: 4rem;
+            border-radius: 40px 0px 0px 40px;
+        }
+
+        ul {
+            list-style: none;
+            padding-left: 0px;
+        }
+
+        h2 {
+            font-size: 18px;
+            margin-bottom: 1.5rem;
+        }
+
+        .viforlogo {
+            width: 150px;
+            margin-bottom: 4rem;
+            padding-top: 2rem;
+        }
+
+        .userinfo {
+            font-size: 14px;
+            color: #000;
+        }
+
+        .userdec strong {
+            font-size: 16px;
+            font-weight: bold;
+            color: #000;
+            display: block;
+        }
+
+        .userdec span {
+            font-size: 14px;
+            color: #666;
+            display: block;
+        }
+
+        .userdec {
+            margin-bottom: 3rem;
+        }
+
+        .communityname,
+        .importat {
+            font-size: 14px;
+            color: #999;
+        }
+
+        .userimg {
+            width: 100px;
+            margin-bottom: 1.5rem;
+        }
+
+        .teamdec {
+            font-size: 13px;
+            line-height: normal;
+            margin-top: 15px;
+        }
+
+        .teming img {
+            width: 100%;
+        }
+
+        .teming {
+            width: 60px;
+            height: 60px;
+            overflow: hidden;
+            border-radius: 50px;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .teamname {
+            font-size: 16px;
+            font-weight: 700;
+            display: inline-block;
+            vertical-align: middle;
+            margin-left: 15px;
+        }
+
+        .facultywrap {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .facultywrap li {
+            width: 45%;
+            margin-bottom: 25px;
+        }
+
+        .eventtiming {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+        .eventtiming li span {
+            font-size: 13px;
+            display: block;
+        }
+
+        .eventtiming li p {
+            font-size: 17px;
+        }
+
+        .alreadyreg {
+            font-size: 14px;
+        }
+
+        .alreadyreg a {
+            margin-left: 10px;
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        .registerbtn {
+            background: #9d1f31;
+            border: none;
+            padding: 8px 20px;
+            font-size: 15px;
+            border-radius: 0px;
+            margin-bottom: 2rem;
+            margin-top: 1rem;
+            color: #fff;
+            display: inline-block;
+        }
+
+        .registerbtn img {
+            width: 30px;
+            margin-left: 25px;
+        }
+
+        .registerbtn:focus {
+            outline: none;
+        }
+
+        .agendaname {
+            color: #7ebee9;
+            font-size: 14px;
+        }
+
+        .agenda img {
+            width: 30px;
+        }
+
+        .agenda {
+            display: flex;
+            justify-content: space-between;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        /*
+        .modal.left .modal-dialog {
+            position:fixed;
+            right: 0;
+            margin: auto;
+                max-width: 76% !important;
+            width: 76% !important;
+            height: 100%;
+            -webkit-transform: translate3d(0%, 0, 0);
+            -ms-transform: translate3d(0%, 0, 0);
+            -o-transform: translate3d(0%, 0, 0);
+            transform: translate3d(0%, 0, 0);
+            background-color: #1e242c;  padding-left: 2rem;
+            padding-right: 2rem;
+            padding-top: 4rem;border-radius: 40px 0px 0px 40px;
+        }
+
+        .modal.left .modal-content {
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .modal.right .modal-body {
+            padding: 15px 15px 80px;
+        }
+
+        .modal.right.fade .modal-dialog {
+            left: -75% !important;
+            -webkit-transition: opacity 0.3s linear, left 0.3s ease-out;
+            -moz-transition: opacity 0.3s linear, left 0.3s ease-out;
+            -o-transition: opacity 0.3s linear, left 0.3s ease-out;
+            transition: opacity 0.3s linear, left 0.3s ease-out;
+        }
+
+        .modal.right.fade.show .modal-dialog {
+            right: 0;
+        }
+
+        /* ----- MODAL STYLE ----- */
+        /*
+        .modal-content {
+            border-radius: 0;
+            border: none;
+        }
+
+        .modal-header,.modal-content {
+            border-bottom-color: transparent;
+            background-color: transparent;
+        }
+
+        .registerform {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .modal-body{position: relative;}
+
+        .modal-body .close {
+            padding: 0;
+            background-color: transparent;
+            border: 0;
+            text-shadow: none;
+            opacity: 1;
+            color: #fff;
+            position: absolute;
+            right: 0;
+            top: -10px;
+        }
+        */
+
+        .registerform .form-group {
+            position: relative;
+            margin-bottom: 0.5rem !important;
+        }
+
+        .registerform .form-group .form-control {
+            background: #4a4e55;
+            border: none;
+            border-radius: 0px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .registerform .form-group label {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 0px;
+        }
+
+        .registerform .form-group label {
+            color: #fff;
+            font-size: 14px;
+            margin-bottom: 0px;
+        }
+
+        .registerform p {
+            font-size: 13px;
+        }
+
+        .registerform h2 {
+            margin-bottom: 4px;
+        }
+
+        .contryname {
+            font-size: 14px;
+            color: #fff;
+            position: absolute;
+            left: 8px;
+            bottom: 9px;
+        }
+
+        .countrycode {
+            color: #fff;
+            font-size: 14px;
+            position: absolute;
+            left: 55px;
+            top: 39px;
+        }
+
+        .numline::after {
+            position: absolute;
+            content: "";
+            border-right: 1px solid #fff;
+            height: 20px;
+            left: 44px;
+            top: 33px;
+        }
+
+        .numline {
+            position: relative;
+        }
+
+        .eventtiming li {
+            width: 50%;
+        }
+
+        .dropdownCal {
+            position: relative;
+            z-index: 99;
+            display: inline-block;
+            /*margin-top: 10px;*/
+        }
+
+        .dropdownCal-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 170px;
+            overflow: auto;
+            box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+            z-index: 1;
+            outline: 0;
+            border-radius: 0px;
+            padding: 0px 0px;
+        }
+
+        .dropdownCal-content a {
+            color: #666;
+            text-align: left;
+            /* font-weight: 600; */
+            padding: 10px 16px;
+            text-decoration: none !important;
+            display: block;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 14px;
+            transition: 0.2s ease-in-out;
+        }
+
+        .dropdownCal a:hover {
+            background-color: transparent;
+        }
+
+        .dropdownCal-content a:after {
+            position: absolute;
+            content: "";
+            width: 25px;
+            height: 25px;
+            background-size: 100% 100% !important;
+            right: 20px;
+        }
+
+        .dropdownCal-content a:nth-child(1):after {
+            background: url("/common/icon/calendar/gmail.png");
+        }
+
+        .dropdownCal-content a:nth-child(2):after {
+            background: url("/common/icon/calendar/yahoo.png");
+        }
+
+        .dropdownCal-content a:nth-child(3):after {
+            background: url("/common/icon/calendar/hotmail.png");
+        }
+
+        .dropdownCal-content a:nth-child(4):after {
+            background: url("/common/icon/calendar/outlook.png");
+        }
+
+        .dropdownCal-content a:hover {
+            background: #d4e7f7;
+            color: #000;
+        }
+
+        .dropdownCal {
+            width: 60%;
+        }
+
+        #myModal {
+            overflow-x: hidden !important;
+        }
+
+        #myModal.show {
+            background: #000000cc !important;
+            overflow: hidden !important;
+        }
+
+        #exampleModal.show {
+            padding-left: 0px !important;
+        }
+
+        .mobilenum {
+            padding-left: 85px;
+        }
+
+        .form-control:focus {
+            box-shadow: none;
+        }
+
+        .show-more-height {
+            height: 35px;
+            overflow: hidden;
+        }
+
+        .viewerbg {
+            background-color: #1e242c;
+        }
+
+        .videobox video {
+            width: 100%;
+            height: 100%;
+        }
+
+        .bluesec {
+            background-color: #163d66;
+            font-size: 13px;
+            color: #fff;
+            line-height: normal;
+            padding: 17px 25px;
+            border-radius: 15px 0px 0px 15px;
+        }
+
+        .bluesec .facultywrap li {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .nav-tabs .nav-link {
+            border: none;
+            padding: 0;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+        }
+
+        .sessiontab {
+            display: block;
+            color: #fff;
+            padding: 10px 20px !important;
+        }
+
+        .sessiontab.active {
+            background: #225d8b;
+            color: #fff;
+            border-radius: 10px;
+        }
+
+        .bluesec .nav-tabs .nav-item {
+            margin-bottom: 0px;
+        }
+
+        .bluesec .nav-tabs {
+            border-bottom: none;
+            margin-bottom: 15px;
+        }
+
+        .infowrap {
+            display: inline-block;
+            width: 70%;
+            vertical-align: middle;
+            margin-left: 22px;
+        }
+
+        .wrapfac .teamname {
+            margin-left: 0px;
+            display: block;
+            margin-bottom: 0px;
+        }
+
+        .wrapfac .teamdec {
+            margin-top: 0px;
+        }
+
+        .show-more {
+            color: #225d8b;
+        }
+
+        .modrator {
+            background: #256595;
+            color: #fff;
+            width: 100%;
+            box-shadow: none;
+            border: none;
+            display: block;
+            padding: 23px 30px;
+            margin-top: -6px;
+            font-size: 15px;
+            border-radius: 0px 0px 10px 10px;
+            padding-left: 55px;
+        }
+
+        .modrator::placeholder {
+            color: #fff;
+        }
+
+        .askquestiobn {
+            position: relative;
+        }
+
+        .mice,
+        .sendnow {
+            display: block;
+        }
+
+        .facultywrap.wrapfac {
+            height: 42vh;
+            overflow: auto;
+        }
+
+        /*
+        .wrapper ul {
+            overflow-y: auto;
+        } */
+
+        ::-webkit-scrollbar-track {
+            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            background-color: #f5f5f5;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            background-color: #f5f5f5;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #000000;
+        }
+
+        .wrapper .toggle_btn.active .fas {
+            transform: rotate(180deg);
+        }
+
+        .moretext {
+            display: none;
+        }
+
+        .mice {
+            position: absolute;
+            left: 15px;
+            top: 18px;
+            opacity: 0.8;
+            width: 25px;
+        }
+
+        .sendbunt {
+            position: absolute;
+            right: 20px;
+            top: 19px;
+            width: 25px;
+        }
+
+        .logo2 {
+            width: 120px;
+        }
+
+        .logo2 img {
+            filter: brightness(0) invert(1);
+        }
+
+        .usertest a img {
+            width: 18px;
+            margin: 0 auto;
+            text-align: center;
+            display: block;
+        }
+
+        .usertest a span {
+            display: block;
+            font-size: 12px;
+            color: #fff;
+            text-align: center;
+            margin: 0 auto;
+            margin-top: 5px;
+        }
+
+        .usertest {
+            display: inline-flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .usertest a {
+            display: block;
+            margin: 0px 10px;
+        }
+
+        .mainheader {
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        .viwerwrap p {
+            font-size: 12px;
+        }
+
+        .viwerwrap .teaminfo h2 {
+            margin-bottom: 15px;
+        }
+
+        a.moreless-button {
+            bottom: 0;
+            width: 30px;
+            text-align: center;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .toggle_btn {
+            text-align: center;
+            font-size: 35px;
+            opacity: 0.3;
+            display: none;
+        }
+
+        .resoursefile a {
+            color: #fff;
+        }
+
+        /* chat box */
+        .chat-box {
+            /* max-width: 400px; */
+            /* margin: 0 auto; */
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+        }
+
+        .chat-header {
+            background-color: #3498db;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .chat-body {
+            padding: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            margin-bottom: 15px;
+        }
+
+        .user-message {
+            background-color: #3498db;
+            color: #fff;
+            padding: 8px;
+            border-radius: 8px;
+            max-width: 70%;
+            align-self: flex-end;
+        }
+
+        .other-message {
+            background-color: #ecf0f1;
+            color: #333;
+            padding: 8px;
+            border-radius: 8px;
+            max-width: 70%;
+            align-self: flex-start;
+        }
+
+        .chat-footer {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            border-top: 1px solid #ddd;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .input-message {
+            flex: 1;
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+        }
+
+        .send-button {
+            background-color: #3498db;
+            color: #fff;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .chattab {
+            height: 85vh;
+        }
+
+        /* draggable table rows */
+        #sessionTabSetting .select,
+        #locale {
+            width: 100%;
+        }
+
+        .like {
+            margin-right: 10px;
+        }
+    </style>
+    <script src="https://player.live-video.net/1.23.0/amazon-ivs-player.min.js" data-script="exclude-me"></script>
+</head>
+
+<body class="viewerbg">
+    <script src="https://kit.fontawesome.com/b99e675b6e.js" data-script="exclude-me"></script>
+
+    <div class="d-flex flex-column justify-content-center align-items-center loader-section" style="width: 100vw; height: 100vh;">
+      <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;" role="status" aria-hidden="true"></div>
+      <div class="text-primary">
+          <strong>Loading Resources...</strong>
+      </div>
+    </div>
+
+    <header class="mainheader d-none">
+        <div class="container-fluid">
+            <div class="row align-content-center">
+                <div class="col-md-6 col-6">
+                    <div>
+                        <img src="https://streamonhub.s3.amazonaws.com/static/logo-sm.png" class="img-fluid logo-img"
+                            alt="" style="height: 3rem" />
+                    </div>
+                </div>
+                <div class="col-md-6 col-6 text-right usertest">
+                    <a href="#" class="text-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" x="0" y="0"
+                            viewBox="0 0 512 512" style="enable-background: new 0 0 512 512" xml:space="preserve"
+                            class="svg-icons">
+                            <g>
+                                <path
+                                    d="M256 0C114.509 0 0 114.496 0 256c0 141.489 114.496 256 256 256 141.491 0 256-114.496 256-256C512 114.509 397.504 0 256 0zm0 476.279c-121.462 0-220.279-98.816-220.279-220.279S134.538 35.721 256 35.721c121.463 0 220.279 98.816 220.279 220.279S377.463 476.279 256 476.279z"
+                                    fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
+                                <path
+                                    d="M248.425 323.924c-14.153 0-25.61 11.794-25.61 25.946 0 13.817 11.12 25.948 25.61 25.948s25.946-12.131 25.946-25.948c0-14.152-11.794-25.946-25.946-25.946zM252.805 127.469c-45.492 0-66.384 26.959-66.384 45.155 0 13.142 11.12 19.208 20.218 19.208 18.197 0 10.784-25.948 45.155-25.948 16.848 0 30.328 7.414 30.328 22.915 0 18.196-18.871 28.642-29.991 38.077-9.773 8.423-22.577 22.24-22.577 51.22 0 17.522 4.718 22.577 18.533 22.577 16.511 0 19.881-7.413 19.881-13.817 0-17.522.337-27.631 18.871-42.121 9.098-7.076 37.74-29.991 37.74-61.666s-28.642-55.6-71.774-55.6z"
+                                    fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
+                            </g>
+                        </svg>
+                        <span>Help</span></a>
+                    <a href="javascript:void(0)" class="text-center btn-refresh">
+                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" x="0" y="0"
+                            viewBox="0 0 438.529 438.528" style="enable-background: new 0 0 512 512"
+                            xml:space="preserve" class="svg-icons">
+                            <g>
+                                <path
+                                    d="M433.109 23.694c-3.614-3.612-7.898-5.424-12.848-5.424-4.948 0-9.226 1.812-12.847 5.424l-37.113 36.835c-20.365-19.226-43.684-34.123-69.948-44.684C274.091 5.283 247.056.003 219.266.003c-52.344 0-98.022 15.843-137.042 47.536-39.021 31.689-64.715 73.035-77.087 124.048v1.997c0 2.474.903 4.617 2.712 6.423 1.809 1.809 3.949 2.712 6.423 2.712h56.814c4.189 0 7.042-2.19 8.566-6.565 7.993-19.032 13.035-30.166 15.131-33.403 13.322-21.698 31.023-38.734 53.103-51.106 22.082-12.371 45.873-18.559 71.376-18.559 38.261 0 71.473 13.039 99.645 39.115l-39.406 39.397c-3.607 3.617-5.421 7.902-5.421 12.851 0 4.948 1.813 9.231 5.421 12.847 3.621 3.617 7.905 5.424 12.854 5.424h127.906c4.949 0 9.233-1.807 12.848-5.424 3.613-3.616 5.42-7.898 5.42-12.847V36.542c0-4.949-1.796-9.23-5.42-12.848zM422.253 255.813h-54.816c-4.188 0-7.043 2.187-8.562 6.566-7.99 19.034-13.038 30.163-15.129 33.4-13.326 21.693-31.028 38.735-53.102 51.106-22.083 12.375-45.874 18.556-71.378 18.556-18.461 0-36.259-3.423-53.387-10.273-17.13-6.858-32.454-16.567-45.966-29.13l39.115-39.112c3.615-3.613 5.424-7.901 5.424-12.847 0-4.948-1.809-9.236-5.424-12.847-3.617-3.62-7.898-5.431-12.847-5.431H18.274c-4.952 0-9.235 1.811-12.851 5.431C1.807 264.844 0 269.132 0 274.08v127.907c0 4.945 1.807 9.232 5.424 12.847 3.619 3.61 7.902 5.428 12.851 5.428 4.948 0 9.229-1.817 12.847-5.428l36.829-36.833c20.367 19.41 43.542 34.355 69.523 44.823 25.981 10.472 52.866 15.701 80.653 15.701 52.155 0 97.643-15.845 136.471-47.534 38.828-31.688 64.333-73.042 76.52-124.05.191-.38.281-1.047.281-1.995 0-2.478-.907-4.612-2.715-6.427-1.81-1.799-3.953-2.706-6.431-2.706z"
+                                    fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
+                            </g>
+                        </svg>
+                        <span>Refresh</span></a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container-fluid d-none">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="videobox">
+                    <video id="video-player" controls playsinline autoplay="true" crossorigin="anonymous"></video>
+                </div>
+
+                <div class="askquestiobn">
+                    <span class="mice"><img src="https://streamonhub.s3.amazonaws.com/static/lobby/images/mice.png"
+                            class="img-fluid" alt="" /></span>
+                    <input type="text" id="message" class="modrator"
+                        placeholder="Ask your question to the moderator" />
+                    <span class="sendbunt" id="send"><img
+                            src="https://streamonhub.s3.amazonaws.com/static/lobby/images/send.png" class="img-fluid"
+                            alt="" /></span>
+                </div>
+            </div>
+            <div class="col-md-4 bluesec">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link sessiontab active" id="one-tab" data-toggle="tab" href="#one"
+                            role="tab" aria-controls="One" aria-selected="true">Session Details</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sessiontab" id="two-tab" data-toggle="tab" href="#two"
+                            role="tab" aria-controls="Two" aria-selected="false">Resources</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sessiontab" id="questionstab" data-toggle="tab" href="#questions"
+                            role="tab" aria-controls="Questions" aria-selected="false">Questions</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sessiontab" id="chatbox" data-toggle="tab" href="#chatboxtabpane"
+                            role="tab" aria-controls="ChatBox" aria-selected="false">Chat</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sessiontab" id="pollstab" data-toggle="tab" href="#polls"
+                            role="tab" aria-controls="Polls" aria-selected="false">Polls</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link sessiontab" id="survey" data-toggle="tab" href="#surveytab"
+                            role="tab" aria-controls="Survey" aria-selected="false">Survey</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="one" role="tabpanel" aria-labelledby="one-tab">
+                        <div class="blurwra viwerwrap">
+                            <p id="session-description">
+                                Stream On will commence a live webcast at 11:00am where in the
+                                presenter will share ppt. Presenter will run polls and
+                                surveys. Durning the webcast you could post questions via chat
+                                which the presenter shall respond to immediately after it gets
+                                over by 11:30 am. We shall connect over zoom to address your
+                                additional queries pertaining to webcast features.
+                            </p>
+
+                            <div class="teaminfo wrapper">
+                                <h2 id="session-subtitle">Faculty</h2>
+                                <ul class="facultywrap wrapfac" id="style-3">
+                                    <li>
+                                        <div class="teming">
+                                            <img src="https://streamonhub.s3.amazonaws.com/static/lobby/images/team1.jpg"
+                                                alt="" />
+                                        </div>
+                                        <div class="infowrap">
+                                            <div class="teamname">Dr. Surender K. Yachha</div>
+                                            <div class="teamdec show-more-height">
+                                                MD (Pediatrics), DM (Gastroenterology), Commonwealth
+                                                Medical Fellowship (Pediatric Hepatologyand Pediatric
+                                                Liver Transplantation, London) Director, Pediatrics
+                                                and Pediatric Super specialty, Head, Department of
+                                                Pediatric Gastroenterology, Pediatric Hepatologyand
+                                                Liver Transplant, Sakra Academics, Sakra World
+                                                Hospital, Bengaluru, Karnataka
+                                            </div>
+                                            <div class="show-more">More...</div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="teming">
+                                            <img src="https://streamonhub.s3.amazonaws.com/static/lobby/images/team2.jpg"
+                                                alt="" />
+                                        </div>
+                                        <div class="infowrap">
+                                            <div class="teamname">Dr. Shrish Bhatnagar</div>
+                                            <div class="teamdec show-more-height">
+                                                MD (Pediatrics),PDCC (Pediatric Gasteroenterolgy,
+                                                SGPGI) Professor and HOD, Eras Lucknow Medical College
+                                                and Hospital Consultant Pediatric Gastroenterologist,
+                                                Sparsh Child Care and Gastro Centre, Visiting
+                                                Consultant,Pediatric Gastroenterology, VPIMS, Lucknow,
+                                                Uttar Pradesh
+                                            </div>
+                                            <div class="show-more">More...</div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="teming">
+                                            <img src="https://streamonhub.s3.amazonaws.com/static/lobby/images/team3.jpg"
+                                                alt="" />
+                                        </div>
+                                        <div class="infowrap">
+                                            <div class="teamname">Dr. Nishant Wadhwa</div>
+                                            <div class="teamdec show-more-height">
+                                                DCH, DNB (Pediatrics), Fellowship, Pediatric
+                                                Gastroenterolgy, Hepatology and NutritionSenior
+                                                Consultant and Chief, Division of Pediatric
+                                                Gastroenterology, Hepatology and Liver Transplantation
+                                                Sir Ganga Ram Hospital, Founder Executive Member,
+                                                ISPGHAN, New Delhi
+                                            </div>
+                                            <div class="show-more">More...</div>
+                                        </div>
+                                    </li>
+                                    <li>
+                                        <div class="teming">
+                                            <img src="https://streamonhub.s3.amazonaws.com/static/lobby/images/team4.jpg"
+                                                alt="" />
+                                        </div>
+                                        <div class="infowrap">
+                                            <div class="teamname">Dr. Anuj Rastogi</div>
+                                            <div class="teamdec show-more-height">
+                                                MD (Pediatrics) HOD, Neonatology and Pediatrics,
+                                                Jaswant Rai Speciality Hospital, Founder,Taara kids
+                                                Consultant Pediatrician and Neonatologist, Child Care
+                                                Clinic Meerut, Uttar Pradesh
+                                            </div>
+                                            <div class="show-more">More...</div>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <div class="teming">
+                                            <img src="https://streamonhub.s3.amazonaws.com/static/lobby/images/team5.jpg"
+                                                alt="" />
+                                        </div>
+                                        <div class="infowrap">
+                                            <div class="teamname">Dr.Rakesh Bhati</div>
+                                            <div class="teamdec show-more-height">
+                                                MD (Pediatrics) Senior Consultant Pediatrician,
+                                                Pushpanjali Hospital, Past Professor in Pediatrics S N
+                                                Medical College Agra, Uttar Pradesh
+                                            </div>
+                                            <div class="show-more">More...</div>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                                <div class="toggle_btn">
+                                    <!--  <span class="toggle_text">Show More</span> -->
+                                    <span class="arrow">
+                                        <i class="fas fa-angle-down"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade p-3" id="two" role="tabpanel" aria-labelledby="two-tab">
+                        <ul class="resoursefile">
+                            <li><a href="#">Resources 1 </a></li>
+                            <li><a href="#">Resources 2 </a></li>
+                            <li><a href="#">Resources 3 </a></li>
+                            <li><a href="#">Resources 4 </a></li>
+                            <li><a href="#">Resources 5 </a></li>
+                        </ul>
+                    </div>
+                    <div class="tab-pane fade p-3" id="questions" role="tabpanel" aria-labelledby="questionstab">
+                        <div class="table-responsive">
+                            <table class="table text-light">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Question</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="question-box"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3 chattab" id="chatboxtabpane" role="tabpanel"
+                        aria-labelledby="chatbox">
+                        <div class="chat-box">
+                            <div class="chat-body" id="chatBody"></div>
+                            <div class="chat-footer">
+                                <input type="text" class="input-message" id="sendChatMessage"
+                                    placeholder="Type your message..." />
+                                <button class="send-button btn-send-message" id="btnSendChatMessage">
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3 text-dark" id="polls" role="tabpanel"
+                        aria-labelledby="pollstab">
+                        <div id="polls-container">
+                            <div id="poll-details"></div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade p-3 text-dark" id="surveytab" role="tabpanel"
+                        aria-labelledby="survey">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Survey</h5>
+                                <form id="surveyResponseForm">
+                                    <!-- Question 1 -->
+                                    <div class="form-group">
+                                        <label for="question1">How satisfied are you with our services?</label>
+                                        <select class="form-control" id="question1" name="question1" required>
+                                            <option value="" disabled selected>
+                                                Select an option
+                                            </option>
+                                            <option value="verySatisfied">Very Satisfied</option>
+                                            <option value="satisfied">Satisfied</option>
+                                            <option value="neutral">Neutral</option>
+                                            <option value="unsatisfied">Unsatisfied</option>
+                                            <option value="veryUnsatisfied">
+                                                Very Unsatisfied
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Question 2 -->
+                                    <fieldset class="form-group">
+                                        <legend>
+                                            Which of the following programming languages do you use?
+                                        </legend>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="question2[]"
+                                                id="language1" value="java" />
+                                            <label class="form-check-label" for="language1">
+                                                Java
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="question2[]"
+                                                id="language2" value="python" />
+                                            <label class="form-check-label" for="language2">
+                                                Python
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="question2[]"
+                                                id="language3" value="javascript" />
+                                            <label class="form-check-label" for="language3">
+                                                JavaScript
+                                            </label>
+                                        </div>
+                                    </fieldset>
+
+                                    <!-- Question 3 -->
+                                    <div class="form-group">
+                                        <label for="question3">What suggestions do you have for improvement?</label>
+                                        <textarea class="form-control" id="question3" name="question3" rows="3"></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary mt-3">
+                                        Submit Survey
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="extra-code">
+        <div class="modal fade rm" id="pageSettingModal" data-backdrop="static" data-keyboard="false"
+            tabindex="-1" aria-labelledby="pageSettingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <form id="console-page-form">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="pageSettingModalLabel">
+                                Settings & Content Management
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body" style="overflow-y: auto; max-height: 600px">
+                            <div class="row">
+                                <div class="col-2">
+                                    <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
+                                        aria-orientation="vertical">
+                                        <a class="nav-link active" id="v-pills-property-tab" data-toggle="pill"
+                                            href="#v-pills-property" role="tab" aria-controls="v-pills-property"
+                                            aria-selected="true">Properties</a>
+                                        <a class="nav-link" id="v-pills-session-tab" data-toggle="pill"
+                                            href="#v-pills-session" role="tab" aria-controls="v-pills-session"
+                                            aria-selected="false">Session</a>
+                                        <a class="nav-link" id="v-poll-setting-tab" data-toggle="pill"
+                                            href="#v-poll-settings-tab" role="tab"
+                                            aria-controls="v-poll-settings-tab" aria-selected="false">Polls</a>
+                                        <a class="nav-link" id="v-survey-setting-tab" data-toggle="pill"
+                                            href="#v-survey-settings-tab" role="tab"
+                                            aria-controls="v-survey-settings-tab" aria-selected="false">Survey</a>
+                                        <a class="nav-link" id="v-pills-settings-tab" data-toggle="pill"
+                                            href="#v-pills-settings" role="tab" aria-controls="v-pills-settings"
+                                            aria-selected="false">Settings</a>
+                                    </div>
+                                </div>
+                                <div class="col-10">
+                                    <div class="tab-content" id="v-pills-tabContent">
+                                        <div class="tab-pane fade show active" id="v-pills-property" role="tabpanel"
+                                            aria-labelledby="v-pills-property-tab">
+                                            <div class="form-group row">
+                                                <label for="bgColor" class="col-sm-4 col-form-label">Background
+                                                    color</label>
+
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control bgColorInput"
+                                                        name="" />
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="color" class="form-control bgColorInput"
+                                                        id="bgColor" name="colorProperties[bgColor]" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="primaryColor" class="col-sm-4 col-form-label">Primary
+                                                    color</label>
+
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control primaryColorInput"
+                                                        name="" />
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="color" class="form-control primaryColorInput"
+                                                        id="primaryColor" name="colorProperties[primaryColor]" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="secondaryColor" class="col-sm-4 col-form-label">Secondary
+                                                    color</label>
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control secondaryColorInput"
+                                                        name="" />
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="color" class="form-control secondaryColorInput"
+                                                        id="secondaryColor" name="colorProperties[secondaryColor]" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="textColor" class="col-sm-4 col-form-label">Text
+                                                    color</label>
+
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control textColorInput"
+                                                        name="" />
+                                                </div>
+
+                                                <div class="col-sm-5">
+                                                    <input type="color" class="form-control textColorInput"
+                                                        id="textColor" name="colorProperties[textColor]" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="hoverColor" class="col-sm-4 col-form-label">Hover
+                                                    color</label>
+
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control hoverColorInput"
+                                                        name="" />
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="color" class="form-control hoverColorInput"
+                                                        id="hoverColor" name="colorProperties[hoverColor]" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="iconColor" class="col-sm-4 col-form-label">Icon
+                                                    color</label>
+
+                                                <div class="col-sm-3">
+                                                    <input type="text" class="form-control iconColorInput"
+                                                        name="" />
+                                                </div>
+                                                <div class="col-sm-5">
+                                                    <input type="color" class="form-control iconColorInput"
+                                                        id="iconColor" name="colorProperties[iconColor]" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="logoImage" class="col-sm-4 col-form-label">Logo /
+                                                    Banner</label>
+                                                <div class="col-sm-3">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input"
+                                                                id="logoCheckbox" name="showLogoImage" />
+                                                            <label class="custom-control-label"
+                                                                for="logoCheckbox">Check to Upload Image</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="logo-image-section col-sm-5 d-none">
+                                                    <div class="custom-file mb-3">
+                                                        <input type="file" class="custom-file-input"
+                                                            id="logoImage" name="logoImage"
+                                                            data-parsley-filetype="image"
+                                                            data-parsley-max-filesize="5" accept="image/*" />
+                                                        <input type="hidden" id="logo-image-url" name="logoImageUrl"
+                                                            value="" />
+                                                        <label class="custom-file-label" for="logoImage">Choose
+                                                            file</label>
+                                                        <div class="mb-3 mt-3">
+                                                            <a class="view-logo-image-btn viewImageButton"
+                                                                href="javascript:void(0)"
+                                                                data-type="view-logo-image-btn">View Image</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label for="logoImage" class="col-sm-4 col-form-label">Background
+                                                    Image</label>
+                                                <div class="col-sm-3">
+                                                    <div class="form-group">
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input"
+                                                                name="showBackgroundImage" id="bgImageCheckbox" />
+                                                            <label class="custom-control-label"
+                                                                for="bgImageCheckbox">Check to Upload Image</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="bg-image-section col-sm-5 d-none">
+                                                    <div class="custom-file mb-3">
+                                                        <input type="file" class="custom-file-input"
+                                                            id="bgImage" name=""
+                                                            data-parsley-filetype="image"
+                                                            data-parsley-max-filesize="5" accept="image/*" />
+                                                        <input type="hidden" id="bg-image-url"
+                                                            name="backgroundImageUrl" value="" />
+                                                        <label class="custom-file-label" for="">Choose
+                                                            file</label>
+                                                        <div class="mb-3 mt-3">
+                                                            <a class="view-bg-image-btn viewImageButton"
+                                                                href="javascript:void(0)"
+                                                                data-type="view-bg-image-btn">View Image</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-session" role="tabpanel"
+                                            aria-labelledby="v-pills-session-tab">
+                                            <div class="form-group row">
+                                                <label for="sessionTitle" class="col-sm-4 col-form-label">Session
+                                                    Title</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="sessionTitle"
+                                                        name="session_title" />
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="sessionDescription"
+                                                    class="col-sm-4 col-form-label">Session Description</label>
+                                                <div class="col-sm-8">
+                                                    <textarea type="text" class="form-control" col="2" id="sessionDescription" name="session_description"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label for="sessionSubTitle" class="col-sm-4 col-form-label">Session
+                                                    Header</label>
+                                                <div class="col-sm-8">
+                                                    <input type="text" class="form-control" id="sessionSubTitle"
+                                                        name="session_sub_title" />
+                                                </div>
+                                            </div>
+                                            <div class="container mt-5">
+                                                <div class="card">
+                                                    <div class="card-header">
+                                                        Add / modify sessions details
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div id="accordion">
+                                                            <!-- Session Details Items will be added dynamically here -->
+                                                        </div>
+                                                    </div>
+                                                    <div class="card-footer text-muted">
+                                                        <button type="button" class="btn btn-success mt-3"
+                                                            id="addNew">
+                                                            Add New
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-poll-settings-tab" role="tabpanel"
+                                            aria-labelledby="v-poll-setting-tab">
+                                            <div class="container mt-5">
+                                                <div id="pollsContainer"></div>
+
+                                                <button type="button" class="btn btn-primary" id="addPoll">
+                                                    Add Poll
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-survey-settings-tab" role="tabpanel"
+                                            aria-labelledby="v-survey-setting-tab">
+                                            <div class="container mt-5">
+                                                <div id="surveyContainer"></div>
+
+                                                <button type="button" class="btn btn-primary" id="addSurvey">
+                                                    Add New Question
+                                                </button>
+                                                <button type="submit" class="btn btn-primary">
+                                                    Save
+                                                </button>
+                                            </div>
+                                            <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                                                aria-labelledby="v-pills-settings-tab"></div>
+                                        </div>
+                                        <div class="tab-pane fade" id="v-pills-settings" role="tabpanel"
+                                            aria-labelledby="v-pills-settings-tab"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js" data-script="exclude-me"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js" data-script="exclude-me">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" data-script="exclude-me"></script>
+    <!-- Bootstrap draggable table rows -->
+
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.css" rel="stylesheet" />
+    <link href="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/reorder-rows/bootstrap-table-reorder-rows.css"
+        rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/tablednd@1.0.5/dist/jquery.tablednd.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/bootstrap-table.min.js"></script>
+    <script src="https://unpkg.com/bootstrap-table@1.22.1/dist/extensions/reorder-rows/bootstrap-table-reorder-rows.min.js">
+    </script>
+    <script src="https://streamonhub.s3.amazonaws.com/static/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <script src="api.js"></script>
+
+    <script data-script="exclude-me">
+        var companyId = "99868a19-bc7e-46aa-873a-06bfeea25ae8";
+        var eventId = "99868b18-a808-45cb-bfaf-bf14828cbe67";
+        var companySlug = "my_fev_company";
+        var eventSlug = "pxfeorvg657y";
+        var pageDetailJsonUrl =
+            "https://s3.amazonaws.com/event.streamonhub.com/my_fev_company/pxfeorvg657y/console.json";
+        console.log({
+            pageDetailJsonUrl,
+        });
+    </script>
+
+    <script src="lobby.js"></script>
+</body>
+
+</html>
