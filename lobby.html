@@ -12,7 +12,11 @@
     <link rel="stylesheet" href="https://streamonhub.s3.amazonaws.com/static/lobby/css/responsivetemp.css" />
     <link href="https://streamonhub.s3.amazonaws.com/static/plugins/sweetalert2/sweetalert2.min.css" rel="stylesheet"
         type="text/css" />
-    <script src="https://web-broadcast.live-video.net/1.6.0/amazon-ivs-web-broadcast.js"></script>
+    <!-- <script src="https://web-broadcast.live-video.net/1.6.0/amazon-ivs-web-broadcast.js"> -->
+    
+    </script>
+    <script src="https://player.live-video.net/1.22.0/amazon-ivs-player.min.js"></script>
+
     <style>
         /*body{background-color:#fafbfb;}*/
 
@@ -1001,7 +1005,9 @@
                     <div class="tab-pane fade p-3 text-dark" id="polls" role="tabpanel"
                         aria-labelledby="pollstab">
                         <div id="polls-container">
-                            <div id="poll-details"></div>
+                            <div id="poll-details">
+                                <p class="text-center">Waiting for poll question.</p>
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane fade p-3 text-dark" id="surveytab" role="tabpanel"
@@ -1360,12 +1366,15 @@
     <script src="api.js"></script>
 
     <script data-script="exclude-me">
-        var companyId = "99868a19-bc7e-46aa-873a-06bfeea25ae8";
-        var eventId = "99868b18-a808-45cb-bfaf-bf14828cbe67";
-        var companySlug = "my_fev_company";
-        var eventSlug = "pxfeorvg657y";
+                                                            var companyId = localStorage.companyId ?? "99485e65-724c-493e-8bc0-22b369f0edc0";
+                                                            var eventId = "9aba9784-4a14-467d-8b84-e101d5bf611f"//localStorage.eventId;
+                                                            var companySlug = localStorage.companySlug ?? "streamon_hub";
+                                                            var eventSlug = localStorage.eventSlug ?? "1ioedzcga05m";
+                                                        
         var pageDetailJsonUrl =
             "https://s3.amazonaws.com/event.streamonhub.com/my_fev_company/pxfeorvg657y/console.json";
+                                                var playerConfigUrl =
+                                                    `https://s3.amazonaws.com/event.streamonhub.com/${companySlug}/${eventSlug}/config.json`;
         console.log({
             pageDetailJsonUrl,
         });

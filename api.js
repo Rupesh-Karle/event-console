@@ -1,8 +1,10 @@
 //const apiBaseUrl = `http://ec2-54-176-236-201.us-west-1.compute.amazonaws.com/api/`;
 //const webBaseUrl = `http://ec2-54-176-236-201.us-west-1.compute.amazonaws.com/`;
 
-const apiBaseUrl = `http://localhost:8000/api/`;
-const webBaseUrl = `http://localhost:8000/`;
+// const apiBaseUrl = `https://streamonhub.com/api/`;
+// const webBaseUrl = `https://streamonhub.com/`;
+const apiBaseUrl = `http://localhost:8005/api/`;
+const webBaseUrl = `http://localhost:8005/`;
 
 const publicUrls = ["index", "login", "register", "error", "site"];
 

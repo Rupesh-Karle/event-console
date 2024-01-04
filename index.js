@@ -13,6 +13,11 @@ function login(formData) {
       console.log({ data });
       //data - response from server
       if (data.status == "success") {
+        let token = data?.data?.token;
+        let expiry = data?.data?.expiry;
+        localStorage.token = token;
+        localStorage.expiry = expiry;
+        localStorage.userId = data?.data?.user?.id;
         let url = "";
         if (data.data?.url) {
           if (!/^https:\/\//i.test(data.data.url)) {

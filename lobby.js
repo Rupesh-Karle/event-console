@@ -32,6 +32,7 @@ function setPageColorProperties(colorProperties) {
       } else if (key == "hoverColor") {
         $(".hoverColorInput").val(value);
       } else if (key == "textColor") {
+        textColor = value;
         $(".textColorInput").val(value);
         $(
           ".userinfo, .userdec strong, .userdec span, .importat, .sessiontab, .modrator, .usertest a span, .resoursefile a, .bluesec"
@@ -42,7 +43,7 @@ function setPageColorProperties(colorProperties) {
 
         $("<style>")
           .prop("type", "text/css")
-          .html(`.modrator::placeholder { color: ${textColor} !important; }`)
+          .html(`.modrator::placeholder { color: ${textColor} !important; } #polls-container p { color: ${textColor} !important; }`)
           .appendTo("head");
       } else if (key == "iconColor") {
         $(".iconColorInput").val(value);
@@ -98,9 +99,9 @@ function handleSessionDetails(
   }
 }
 
-function readPageJson() {
+async function readPageJson() {
   // Use jQuery's getJSON function to read the JSON file
-  $.getJSON(
+  await $.getJSON(
     pageDetailJsonUrl + "?id=" + generateUniqueString("time_"),
     function (data) {
       // Data is the parsed JSON object
@@ -114,6 +115,9 @@ function readPageJson() {
         data?.session_sub_title,
         data?.sessionSpeakers
       );
+
+      pollQuestions = data?.pollQuestions;
+      pollOptions = data?.pollOptions;
 
       $(".loader-section").removeClass("d-flex");
       $(".loader-section").css("display", "none");
@@ -131,12 +135,34 @@ function readPageJson() {
     var err = textStatus + ", " + error;
     console.error("Request Failed: " + err);
   });
+
+  await $.getJSON(
+    playerConfigUrl + "?id=" + generateUniqueString("time_"),
+    function (data) {
+      // Data is the parsed JSON object
+      console.log({ data });
+      if (data && Object.keys(data).length) {
+        let ingestEndpoint =
+          "rtmps://" + data.channel.ingestEndpoint + ":443/app/";
+        // $("#ingest-endpoint").val(ingestEndpoint);
+        // $("#stream-key").val(data.streamKey.value);
+        playbackUrl = data.channel.playbackUrl;
+        console.log({
+          playbackUrl,
+        });
+      }
+    }
+  ).fail(function (jqxhr, textStatus, error) {
+    var err = textStatus + ", " + error;
+    console.error("Request Failed: " + err);
+  });
+  return true;
 }
 
 
 function startQueWebSocket() {
   queWebSocketUrl =
-    "wss://cmu8ginphj.execute-api.us-east-1.amazonaws.com/production?event_id=108&room=question";
+    "wss://cmu8ginphj.execute-api.us-east-1.amazonaws.com/production?event_id=" + eventId + "&room=question";
   queWebSocket = new WebSocket(queWebSocketUrl);
 
   queWebSocket.onopen = function (event) {
@@ -165,7 +191,8 @@ function startQueWebSocket() {
     let messageObj = {
       action: "sendmessage",
       message: message,
-      event_id: "108",
+      event_id: eventId,
+      user_id: userId,
       room: "question",
       name: "Test User",
     };
@@ -186,7 +213,7 @@ function startQueWebSocket() {
 
 function startChatWebSocket() {
   webSocketChatUrl =
-    "wss://cmu8ginphj.execute-api.us-east-1.amazonaws.com/production?event_id=108&room=chat";
+    "wss://cmu8ginphj.execute-api.us-east-1.amazonaws.com/production?event_id=" + eventId + "&room=chat";
   chatWebSocket = new WebSocket(webSocketChatUrl);
 
   chatWebSocket.onopen = function (event) {
@@ -216,7 +243,8 @@ function startChatWebSocket() {
     let messageObj = {
       action: "sendmessage",
       message: message,
-      event_id: "108",
+      event_id: eventId,
+      user_id: userId,
       room: "chat",
       name: "Test User",
     };
@@ -243,7 +271,7 @@ function startChatWebSocket() {
 
 function startPollWebSocket() {
   webSocketPollUrl =
-    "wss://cmu8ginphj.execute-api.us-east-1.amazonaws.com/production?event_id=108&room=poll";
+    "wss://cmu8ginphj.execute-api.us-east-1.amazonaws.com/production?event_id=" + eventId + "&room=poll";
   pollWebSocket = new WebSocket(webSocketPollUrl);
 
   pollWebSocket.onopen = function (event) {
@@ -323,7 +351,49 @@ function displayMessage(data, roomType) {
   }
 }
 
+
+async function getStreamingConfig(companyId, eventId) {
+  return await $.ajax({
+    url: `${apiBaseUrl}company/${companyId}/${eventId}/get-streaming-config`, // Update with your Laravel route
+    type: "GET",
+    // data: JSON.stringify(formData),
+    contentType: false,
+    processData: false,
+    beforeSend: function (xhr) {
+      xhr.setRequestHeader("Authorization", "Bearer " + getJwtToken());
+    },
+    success: function (data) {
+      if (data?.status == "success") {
+        let config = data?.data?.config;
+        let polls = data?.data?.polls;
+        // let surveys = data?.data?.surveys;
+
+        // if (surveys && Object.keys(surveys).length) {
+        //   eventSurveys = surveys;
+        //   renderSurveysQuestion(surveys);
+        // }
+
+        if (config && Object.keys(config).length) {
+          let ingestEndpoint =
+            "rtmps://" + config.channel.ingestEndpoint + ":443/app/";
+          $("#ingest-endpoint").val(ingestEndpoint);
+          $("#stream-key").val(config.streamKey.value);
+          playbackUrl = config.channel.playbackUrl;
+          console.log({
+            playbackUrl,
+          });
+        }
+        console.log("data from streaming api: " + config);
+      }
+    },
+    error: function (error) {
+      console.error(error);
+    },
+  });
+}
+
 async function IVSPlayerInit(IVSPlayerPackage) {
+  console.log("IVSPlayerInit called");
   let playbackState = "playing";
   // First, check if the browser supports the IVS player.
   if (!IVSPlayerPackage.isPlayerSupported) {
@@ -371,7 +441,7 @@ async function IVSPlayerInit(IVSPlayerPackage) {
           }
         }
       }
-      // displayLivePoll(metadataText);
+      displayLivePoll(metadataText);
     } catch (error) {
       console.error(`Error parsing JSON:`, error);
     }
@@ -385,8 +455,6 @@ async function IVSPlayerInit(IVSPlayerPackage) {
     console.log("Player State - RE-BUFFERING");
     // rebuffered = true;
   });
-
-  await getStreamingConfig(companyId, eventId);
   console.log("BEFORE SET", {
     playbackUrl,
   });
@@ -402,29 +470,240 @@ async function IVSPlayerInit(IVSPlayerPackage) {
   });
 }
 
-function refreshPage(contentOnly = false) {
+
+function makeJSObject(string) {
+  try {
+    return JSON.parse(string);
+  } catch {
+    return string;
+  }
+}
+
+async function refreshPage(contentOnly = false) {
   if(contentOnly) {
-    readPageJson();
+    await readPageJson();
   } else {
-    readPageJson();
+    await readPageJson();
     startQueWebSocket();
     startPollWebSocket();
     startChatWebSocket();
-    (function(IVSPlayerPackage) {
-      IVSPlayerInit(IVSPlayerPackage)
-    });
+    (async function (IVSPlayer) {
+      console.log("IVSPlayer: ", {IVSPlayer});
+      const PlayerState = IVSPlayer.PlayerState;
+      const PlayerEventType = IVSPlayer.PlayerEventType;
+    
+      // Initialize player
+      player = IVSPlayer.create();
+      player.attachHTMLVideoElement(videoPlayer);
+    
+      // Attach event listeners
+      player.addEventListener(PlayerState.PLAYING, function () {
+        console.log("Player State - PLAYING");
+      });
+      player.addEventListener(PlayerState.ENDED, function () {
+        console.log("Player State - ENDED");
+      });
+      player.addEventListener(PlayerState.READY, function () {
+        console.log("Player State - READY");
+      });
+      player.addEventListener(PlayerEventType.ERROR, function (err) {
+        console.warn("Player Event - ERROR:", err);
+      });
+    
+      player.addEventListener(PlayerEventType.TEXT_METADATA_CUE, function (cue) {
+        var metadataText = cue.text.trim();
+        const position = player.getPosition().toFixed(2);
+        console.log(
+          `PlayerEvent - METADATA: "${metadataText}". Observed ${position}s after playback started.`
+        );
+        try {
+          if (typeof metadataText === "string") {
+            metadataText = makeJSObject(JSON.stringify(metadataText));
+            if (typeof metadataText === "string") {
+              console.log(metadataText);
+              metadataText = makeJSObject(metadataText);
+              if (typeof metadataText === "string") {
+                metadataText = makeJSObject(metadataText);
+              }
+            }
+          }
+        } catch (error) {
+          console.error(`Error parsing JSON:`, error);
+        }
+        let {type, action, data} = metadataText;
+        console.log({type, action, data});
+
+        if(type && action && data) {
+          console.log("in")
+          switch(type) {
+            case "poll":
+              if(action == "show") {
+                $("ul#myTab > li > .nav-link").removeClass("active");
+                $("#myTabContent > .tab-pane").removeClass("active");
+                $("ul#myTab > li > .nav-link#pollstab").addClass("active");
+                $("#myTabContent > .tab-pane#polls").addClass("active show");
+                displayLivePoll(data?.poll_id);
+              }
+              break;
+            default:
+              console.log("No such type.")
+              break;
+          }
+        }
+      });
+    
+      // Setup stream and play
+      
+      player.setAutoplay(true);
+      player.load(playbackUrl);
+    
+      // Setvolume
+      player.setVolume(0.1);
+    
+      // Remove card
+      // function removeCard() {
+      //   quizEl.classList.toggle("drop");
+      // }
+    
+      // Trigger quiz
+      // function triggerQuiz(metadataText) {
+      //   let obj = JSON.parse(metadataText);
+    
+      //   quizEl.style.display = "";
+      //   quizEl.classList.remove("drop");
+      //   waitMessage.style.display = "none";
+      //   cardInnerEl.style.display = "none";
+      //   cardInnerEl.style.pointerEvents = "auto";
+    
+      //   while (answersEl.firstChild) answersEl.removeChild(answersEl.firstChild);
+      //   questionEl.textContent = obj.question;
+    
+      //   let createAnswers = function (obj, i) {
+      //     let q = document.createElement("a");
+      //     let qText = document.createTextNode(obj.answers[i]);
+      //     answersEl.appendChild(q);
+      //     q.classList.add("answer");
+      //     q.appendChild(qText);
+    
+      //     q.addEventListener("click", (event) => {
+      //       cardInnerEl.style.pointerEvents = "none";
+      //       if (q.textContent === obj.answers[obj.correctIndex]) {
+      //         q.classList.toggle("correct");
+      //       } else {
+      //         q.classList.toggle("wrong");
+      //       }
+      //       setTimeout(function () {
+      //         removeCard();
+      //         waitMessage.style.display = "";
+      //       }, 1050);
+      //       return false;
+      //     });
+      //   };
+    
+      //   for (var i = 0; i < obj.answers.length; i++) {
+      //     createAnswers(obj, i);
+      //   }
+      //   cardInnerEl.style.display = "";
+      // }
+    
+      // waitMessage.style.display = "";
+    })(window.IVSPlayer);
   }
+}
+
+function displayLivePoll(pollId) {
+  console.log("called");
+  if (pollId && pollQuestions && Object.keys(pollQuestions).length && pollQuestions[pollId]) {
+    let question = pollQuestions[pollId];
+    let options = null;
+    if(pollOptions && Object.keys(pollOptions).length && pollOptions[pollId]){
+      options = pollOptions[pollId];
+    }
+    
+    let optionsC = "";
+    if (options && Object.keys(options).length) {
+      for(let i in options) {
+        optionsC += `
+          <div class="form-check">
+              <input class="form-check-input" type="radio" name="pollOption"
+                  id="${i}" value="${i}" required>
+              <label class="form-check-label" for="${i}">
+                ${options[i]}
+              </label>
+          </div>
+        `;
+      }
+    }
+
+    $("#polls-container").html(`
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title"></h5>
+                <form id="livePollForm-${pollId}">
+                    <input type="hidden" name="poll_id" value="${pollId}"/>
+                    <div class="row">
+                        <div class="col-12 mb-2">${question}</div>
+                    </div>
+                    ${optionsC}
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>
+            </div>
+        </div>
+    `);
+  }
+}
+
+function submitPoll(resultJson) {
+  fetch(apiUrl + '/polls/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: resultJson,
+  });
+  //   .then(response => response.json())
+  //   .then(data => console.log('POST request successful:', data))
+  //   .catch(error => console.error('Error making POST request:', error));
+  // $.ajax({
+  //   url: `${apiBaseUrl}company/${companyId}/${eventId}/queue-poll-res`,
+  //   type: "POST",
+  //   data: resultJson,
+  //   beforeSend: function (xhr) {
+  //     xhr.setRequestHeader("Authorization", "Bearer " + getJwtToken());
+  //   },
+  //   success: function (data) {
+  //   }
+  // });
+}
+
+function getPollResults(event_id, poll_id) {
+  fetch(apiUrl + `/polls/${event_id}/${poll_id}`,{
+    method: "GET"
+  })
+    .then(response => response.json())
+    .then(data => console.log('POST request successful:', data))
+    .catch(error => console.error('Error making POST request:', error));
 }
 
 
 //Global Variables
+
+var room = {
+  question: "question",
+  chat: "chat",
+};
 var queWebSocketUrl = webSocketPollUrl = webSocketChatUrl = null;
 var queWebSocket = pollWebSocket = chatWebSocket = null;
+let playbackUrl = null;
+var player =  null;
+const videoPlayer = document.getElementById("video-player");
+var apiUrl = "https://util.streamonhub.com/event-poll-api";
+var pollQuestions = pollOptions = null;
 
 $(document).ready(async function() {
-  if(!getJwtToken()) {
-    window.location.href("/");
-  }
+  // if(!(localStorage.token)) {
+  //   window.location.href = "index.html";
+  // }
   refreshPage();
   
   $("ul.facultywrap.wrapfac").on("click", ".show-more", function () {
@@ -439,5 +718,21 @@ $(document).ready(async function() {
   $(document).on("click", ".btn-refresh", function(e) {
     e.preventDefault();
     refreshPage(true);
-  })
+  });
+  
+  $("#polls-container").on("submit", "form", function (e) {
+    e.preventDefault();
+    let poll_id = $(this).attr("id").split("-")[1];
+    let optionKey = $(this).find("input[type='radio']:checked").val();
+    let optionVal = $(this).find("input[type='radio']:checked").siblings('label').text().trim();
+    let pollResultObj = {
+      event_id: eventId,
+      poll_id: poll_id,
+      answer: [{[optionKey]: optionVal}],
+      is_deleted: false
+    };
+    let pollResultJson = JSON.stringify(pollResultObj);
+    submitPoll(pollResultJson);
+    $("#polls-container").html(`<p class="text-center">Your response was submitted successfully.</p>`);
+  });
 });
