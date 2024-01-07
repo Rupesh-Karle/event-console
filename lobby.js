@@ -6,17 +6,18 @@ function generateUniqueString(prefix) {
 }
 
 function updateActiveTabColor(globalActiveTabColor = "#FFFFFF") {
+  console.log({globalActiveTabColor})
   // Find the element with class 'sessiontab' and 'active'
-  var activeTab = $(".sessiontab.active");
   $(".nav-link").css("background", "");
-  activeTab.css("background", globalActiveTabColor);
+  var activeTab = $(".sessiontab.active");
+  // activeTab.css("background", "");
+  activeTab.css("background", (globalActiveTabColor + " !important"));
   activeTab.css("color", "#FFFFFF");
 }
 
 function setPageColorProperties(colorProperties) {
   if (colorProperties) {
-    $.each(colorProperties, function (key, value) {
-      console.log(key + ": " + value);
+    $.each(colorProperties, function(key, value) {
       if (key == "primaryColor") {
         $(".primaryColorInput").val(value);
         $(".bluesec").css("background-color", value);
@@ -25,12 +26,19 @@ function setPageColorProperties(colorProperties) {
         $(".secondaryColorInput").val(value);
         globalActiveTabColor = value;
         updateActiveTabColor(value);
+        console.log("inside secondary color")
         // $(".show-more").css("color", value);
       } else if (key == "bgColor") {
         $(".bgColorInput").val(value);
         $(".viewerbg").css("background-color", value);
       } else if (key == "hoverColor") {
         $(".hoverColorInput").val(value);
+        $("<style>")
+            .prop("type", "text/css")
+            .html(
+                `a:hover, button:hover { color: ${value} !important; }`
+            )
+            .appendTo("head");
       } else if (key == "textColor") {
         textColor = value;
         $(".textColorInput").val(value);
@@ -46,6 +54,8 @@ function setPageColorProperties(colorProperties) {
           .html(`.modrator::placeholder { color: ${textColor} !important; } #polls-container p { color: ${textColor} !important; }`)
           .appendTo("head");
       } else if (key == "iconColor") {
+        console.log({key: value});
+        $(".btn-drawer").css("color", value);
         $(".iconColorInput").val(value);
       }
     });
@@ -105,7 +115,8 @@ async function readPageJson() {
     pageDetailJsonUrl + "?id=" + generateUniqueString("time_"),
     function (data) {
       // Data is the parsed JSON object
-      console.log({ data });
+      // data = data
+      console.log({data});
       setPageColorProperties(data?.colorProperties);
       setPageImages(data?.logoImageUrl);
       $(".facultywrap.wrapfac").html("");
@@ -118,6 +129,8 @@ async function readPageJson() {
 
       pollQuestions = data?.pollQuestions;
       pollOptions = data?.pollOptions;
+      
+      surveyQuestion = data?.surveyQuestion;
 
       $(".loader-section").removeClass("d-flex");
       $(".loader-section").css("display", "none");
@@ -533,7 +546,7 @@ async function refreshPage(contentOnly = false) {
         let {type, action, data} = metadataText;
         console.log({type, action, data});
 
-        if(type && action && data) {
+        if(type && action) {
           console.log("in")
           switch(type) {
             case "poll":
@@ -542,7 +555,24 @@ async function refreshPage(contentOnly = false) {
                 $("#myTabContent > .tab-pane").removeClass("active");
                 $("ul#myTab > li > .nav-link#pollstab").addClass("active");
                 $("#myTabContent > .tab-pane#polls").addClass("active show");
-                displayLivePoll(data?.poll_id);
+                if(data) {
+                  displayLivePoll(data?.poll_id);
+                }
+              } else if(action == "stop") {
+                $("#surveys-container").html(`<p class="text-center">Waiting for survey question.</p>`);
+              }
+              break;
+            case "survey":
+              if(action == "show") {
+                $("ul#myTab > li > .nav-link").removeClass("active");
+                $("#myTabContent > .tab-pane").removeClass("active");
+                $("ul#myTab > li > .nav-link#survey").addClass("active");
+                $("#myTabContent > .tab-pane#surveytab").addClass("active show");
+                if(data) {
+                  displayLiveSurvey(data?.survey_id);
+                }
+              } else if(action == "stop") {
+                $("#surveys-container").html(`<p class="text-center">Waiting for survey question.</p>`);
               }
               break;
             default:
@@ -612,7 +642,6 @@ async function refreshPage(contentOnly = false) {
 }
 
 function displayLivePoll(pollId) {
-  console.log("called");
   if (pollId && pollQuestions && Object.keys(pollQuestions).length && pollQuestions[pollId]) {
     let question = pollQuestions[pollId];
     let options = null;
@@ -653,6 +682,135 @@ function displayLivePoll(pollId) {
   }
 }
 
+function displayLiveSurvey(surveyId) {
+  if (surveyId && surveyQuestion && Object.keys(surveyQuestion).length && surveyQuestion[surveyId]) {
+    let survey = surveyQuestion[surveyId];
+    if(survey) {
+      let formElem = "";
+        let { type, question, options, isRequired } = survey;
+        let requiredField = isRequired ? "required" : "";
+
+        let queField = "";
+        if (options && options.length) {
+            options.map((opt, oi) => {
+                switch (type) {
+                    case "radio":
+                        queField += `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="surveyQuestion[${surveyId}]question${surveyId}[]"
+                                        id="question${surveyId}-option${oi}" value="${oi}" ${requiredField}>
+                                    <label class="form-check-label" for="question${surveyId}-option${oi}">
+                                        ${opt}
+                                    </label>
+                                </div>
+                            `;
+                        break;
+                    case "checkbox":
+                        queField += `
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="surveyQuestion[${surveyId}]question${surveyId}[]"
+                                        id="question${surveyId}-option${oi}" value="${oi}" ${requiredField}>
+                                    <label class="form-check-label" for="question${surveyId}-option${oi}">
+                                        ${opt}
+                                    </label>
+                                </div>
+                            `;
+                        break;
+                    case "dropdown":
+                        queField += `
+                                <option value="${oi}">${opt}</option>
+                            `;
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+
+        switch (type) {
+            case "text":
+                formElem += `
+                        <div class="form-group">
+                            <label for="question${surveyId}">${question}</label>
+                            <input type="text" class="form-control" id="question${surveyId}" name="surveyQuestion[${surveyId}]question${surveyId}" ${requiredField}/>
+                        </div>
+                        <hr>
+                    `;
+                break;
+            case "radio":
+            case "checkbox":
+                formElem += `
+                        <fieldset class="form-group">
+                            <legend style="font-size: inherit;">${question}</legend>
+                            ${queField}
+                        </fieldset>
+                        <hr>
+                    `;
+                break;
+            case "dropdown":
+                formElem += `
+                        <div class="form-group">
+                            <label for="question${surveyId}">${question}</label>
+                            <select class="form-control" id="question${surveyId}" name="surveyQuestion[${surveyId}]question${surveyId}" ${requiredField}>
+                            ${queField}
+                            </select>
+                        </div>
+                        <hr>
+                    `;
+                break;
+            default:
+                break;
+        }
+        formElem += `<button type="submit" class="btn btn-primary mt-3">Submit Survey</button>`;
+
+        $("#survey-details").html(`
+          <div class="card">
+              <div class="card-body">
+                  <h5 class="card-title">Survey Question ${surveyId}</h5>
+                  <form id="form-${surveyId}">
+                      ${formElem}
+                  </form>
+              </div>
+          </div>
+        `);
+        $("#survey-details form").on(
+          "change.checkbox",
+          "input[type='checkbox']",
+          function () {
+              if (
+                  $("#survey-details form").find("input[type='checkbox']:checked")
+                      .length > 0
+              ) {
+                  $("#survey-details form")
+                      .find("input[type='checkbox']")
+                      .removeAttr("required");
+              } else {
+                  $("#survey-details form")
+                      .find("input[type='checkbox']")
+                      .attr("required", "required");
+              }
+          }
+      );
+  
+      $("#survey-details form").on(
+          "change.radio",
+          "input[type='radio']",
+          function () {
+              if ($("input[type='radio']:checked").length > 0) {
+                  $("#survey-details form")
+                      .find("input[type='radio']")
+                      .removeAttr("required");
+              } else {
+                  $("#survey-details form")
+                      .find("input[type='radio']")
+                      .attr("required", "required");
+              }
+          }
+      );
+    }
+  }
+}
+
 function submitPoll(resultJson) {
   fetch(apiUrl + '/polls/submit', {
     method: 'POST',
@@ -661,23 +819,29 @@ function submitPoll(resultJson) {
     },
     body: resultJson,
   });
-  //   .then(response => response.json())
-  //   .then(data => console.log('POST request successful:', data))
-  //   .catch(error => console.error('Error making POST request:', error));
-  // $.ajax({
-  //   url: `${apiBaseUrl}company/${companyId}/${eventId}/queue-poll-res`,
-  //   type: "POST",
-  //   data: resultJson,
-  //   beforeSend: function (xhr) {
-  //     xhr.setRequestHeader("Authorization", "Bearer " + getJwtToken());
-  //   },
-  //   success: function (data) {
-  //   }
-  // });
+}
+
+function submitSurvey(resultJson) {
+  fetch(apiUrl + '/survey/submit', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: resultJson,
+  });
 }
 
 function getPollResults(event_id, poll_id) {
   fetch(apiUrl + `/polls/${event_id}/${poll_id}`,{
+    method: "GET"
+  })
+    .then(response => response.json())
+    .then(data => console.log('POST request successful:', data))
+    .catch(error => console.error('Error making POST request:', error));
+}
+
+function getSurveyResults(event_id, survey_id) {
+  fetch(apiUrl + `/survey/${event_id}/${survey_id}`,{
     method: "GET"
   })
     .then(response => response.json())
@@ -695,12 +859,14 @@ var room = {
 var queWebSocketUrl = webSocketPollUrl = webSocketChatUrl = null;
 var queWebSocket = pollWebSocket = chatWebSocket = null;
 let playbackUrl = null;
-var player =  null;
+var player = globalActiveTabColor = null;
 const videoPlayer = document.getElementById("video-player");
 var apiUrl = "https://util.streamonhub.com/event-poll-api";
 var pollQuestions = pollOptions = null;
+var surveyQuestions = null;
 
 $(document).ready(async function() {
+  $(".fa-chevron-circle-right").toggle();
   // if(!(localStorage.token)) {
   //   window.location.href = "index.html";
   // }
@@ -735,4 +901,42 @@ $(document).ready(async function() {
     submitPoll(pollResultJson);
     $("#polls-container").html(`<p class="text-center">Your response was submitted successfully.</p>`);
   });
+  
+  $("#surveys-container").on("submit", "form", function (e) {
+    e.preventDefault();
+    let survey_id = $(this).attr("id").split("-")[1];
+    let optionKey = $(this).find("input[type='radio']:checked").val();
+    let optionVal = $(this).find("input[type='radio']:checked").siblings('label').text().trim();
+    let surveyResultObj = {
+      event_id: eventId,
+      survey_id: survey_id,
+      answer: [{[optionKey]: optionVal}],
+      is_deleted: false
+    };
+    let surveyResultJson = JSON.stringify(surveyResultObj);
+    submitSurvey(surveyResultJson);
+    $("#surveys-container").html(`<p class="text-center">Your response was submitted successfully.</p>`);
+  });
+
+  $(document).on("click", ".btn-drawer", function(e) {
+    e.preventDefault();
+    $(".fa-chevron-circle-right").toggle();
+    $(".fa-chevron-circle-left").toggle();
+    var columns_container = $(".bluesec");
+    if (!columns_container.hasClass("expanded")) {
+      $(".videosec").removeClass("col-md-8");
+      $(".videosec").addClass("col-md-4");
+      
+      $(".bluesec").removeClass("col-md-4");
+      $(".bluesec").addClass("col-md-8");
+      columns_container.toggleClass("expanded");
+    } else {
+      $(".videosec").removeClass("col-md-4");
+      $(".videosec").addClass("col-md-8");
+      
+      $(".bluesec").removeClass("col-md-8");
+      $(".bluesec").addClass("col-md-4");
+      columns_container.toggleClass("expanded");
+    }
+  })
 });

@@ -467,6 +467,10 @@
             border-radius: 15px 0px 0px 15px;
         }
 
+        .videosec, .bluesec {
+            transition: .7s ease-in-out;
+        }
+
         .bluesec .facultywrap li {
             width: 100%;
             margin-bottom: 15px;
@@ -493,6 +497,8 @@
 
         .bluesec .nav-tabs .nav-item {
             margin-bottom: 0px;
+            white-space: nowrap;
+            padding: 5px 0px;
         }
 
         .bluesec .nav-tabs {
@@ -559,12 +565,13 @@
         } */
 
         ::-webkit-scrollbar-track {
-            -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+            -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
             background-color: #f5f5f5;
         }
 
         ::-webkit-scrollbar {
-            width: 6px;
+            width: 4px;
+            height: 4px;
             background-color: #f5f5f5;
         }
 
@@ -737,6 +744,35 @@
             cursor: pointer;
         }
 
+        #myTab{
+            overflow-x: auto;
+            flex-wrap: nowrap!important;
+        }
+
+        .btn-drawer {
+            font-size: 25px;
+            background: transparent;
+            border: none;
+        }
+
+        .btn-drawer:focus {
+            outline: none;
+            border: none;
+        }
+        .fa-chevron-circle-right:focus{
+            outline: none;
+            border: none;
+        }
+        .fa-chevron-circle-left:focus{
+            outline: none;
+            border: none;
+        }
+
+        .fa-chevron-circle-right, .fa-chevron-circle-left {
+            display: inline-block;
+        }
+
+
         .chattab {
             height: 85vh;
         }
@@ -764,43 +800,11 @@
       </div>
     </div>
 
-    <header class="mainheader d-none">
+    <header class="mb-2">
         <div class="container-fluid">
             <div class="row align-content-center">
-                <div class="col-md-6 col-6">
-                    <div>
-                        <img src="https://streamonhub.s3.amazonaws.com/static/logo-sm.png" class="img-fluid logo-img"
-                            alt="" style="height: 3rem" />
-                    </div>
-                </div>
-                <div class="col-md-6 col-6 text-right usertest">
-                    <a href="#" class="text-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" x="0" y="0"
-                            viewBox="0 0 512 512" style="enable-background: new 0 0 512 512" xml:space="preserve"
-                            class="svg-icons">
-                            <g>
-                                <path
-                                    d="M256 0C114.509 0 0 114.496 0 256c0 141.489 114.496 256 256 256 141.491 0 256-114.496 256-256C512 114.509 397.504 0 256 0zm0 476.279c-121.462 0-220.279-98.816-220.279-220.279S134.538 35.721 256 35.721c121.463 0 220.279 98.816 220.279 220.279S377.463 476.279 256 476.279z"
-                                    fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
-                                <path
-                                    d="M248.425 323.924c-14.153 0-25.61 11.794-25.61 25.946 0 13.817 11.12 25.948 25.61 25.948s25.946-12.131 25.946-25.948c0-14.152-11.794-25.946-25.946-25.946zM252.805 127.469c-45.492 0-66.384 26.959-66.384 45.155 0 13.142 11.12 19.208 20.218 19.208 18.197 0 10.784-25.948 45.155-25.948 16.848 0 30.328 7.414 30.328 22.915 0 18.196-18.871 28.642-29.991 38.077-9.773 8.423-22.577 22.24-22.577 51.22 0 17.522 4.718 22.577 18.533 22.577 16.511 0 19.881-7.413 19.881-13.817 0-17.522.337-27.631 18.871-42.121 9.098-7.076 37.74-29.991 37.74-61.666s-28.642-55.6-71.774-55.6z"
-                                    fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
-                            </g>
-                        </svg>
-                        <span>Help</span></a>
-                    <a href="javascript:void(0)" class="text-center btn-refresh">
-                        <svg xmlns="http://www.w3.org/2000/svg" version="1.1"
-                            xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" x="0" y="0"
-                            viewBox="0 0 438.529 438.528" style="enable-background: new 0 0 512 512"
-                            xml:space="preserve" class="svg-icons">
-                            <g>
-                                <path
-                                    d="M433.109 23.694c-3.614-3.612-7.898-5.424-12.848-5.424-4.948 0-9.226 1.812-12.847 5.424l-37.113 36.835c-20.365-19.226-43.684-34.123-69.948-44.684C274.091 5.283 247.056.003 219.266.003c-52.344 0-98.022 15.843-137.042 47.536-39.021 31.689-64.715 73.035-77.087 124.048v1.997c0 2.474.903 4.617 2.712 6.423 1.809 1.809 3.949 2.712 6.423 2.712h56.814c4.189 0 7.042-2.19 8.566-6.565 7.993-19.032 13.035-30.166 15.131-33.403 13.322-21.698 31.023-38.734 53.103-51.106 22.082-12.371 45.873-18.559 71.376-18.559 38.261 0 71.473 13.039 99.645 39.115l-39.406 39.397c-3.607 3.617-5.421 7.902-5.421 12.851 0 4.948 1.813 9.231 5.421 12.847 3.621 3.617 7.905 5.424 12.854 5.424h127.906c4.949 0 9.233-1.807 12.848-5.424 3.613-3.616 5.42-7.898 5.42-12.847V36.542c0-4.949-1.796-9.23-5.42-12.848zM422.253 255.813h-54.816c-4.188 0-7.043 2.187-8.562 6.566-7.99 19.034-13.038 30.163-15.129 33.4-13.326 21.693-31.028 38.735-53.102 51.106-22.083 12.375-45.874 18.556-71.378 18.556-18.461 0-36.259-3.423-53.387-10.273-17.13-6.858-32.454-16.567-45.966-29.13l39.115-39.112c3.615-3.613 5.424-7.901 5.424-12.847 0-4.948-1.809-9.236-5.424-12.847-3.617-3.62-7.898-5.431-12.847-5.431H18.274c-4.952 0-9.235 1.811-12.851 5.431C1.807 264.844 0 269.132 0 274.08v127.907c0 4.945 1.807 9.232 5.424 12.847 3.619 3.61 7.902 5.428 12.851 5.428 4.948 0 9.229-1.817 12.847-5.428l36.829-36.833c20.367 19.41 43.542 34.355 69.523 44.823 25.981 10.472 52.866 15.701 80.653 15.701 52.155 0 97.643-15.845 136.471-47.534 38.828-31.688 64.333-73.042 76.52-124.05.191-.38.281-1.047.281-1.995 0-2.478-.907-4.612-2.715-6.427-1.81-1.799-3.953-2.706-6.431-2.706z"
-                                    fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
-                            </g>
-                        </svg>
-                        <span>Refresh</span></a>
+                <div class="col-md-12 col-12 px-0">
+                    <div><img src="" class="img-fluid logo-img" alt="" style="height: auto; max-height: 100px; width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -808,7 +812,7 @@
 
     <div class="container-fluid d-none">
         <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8 videosec">
                 <div class="videobox">
                     <video id="video-player" controls playsinline autoplay="true" crossorigin="anonymous"></video>
                 </div>
@@ -824,6 +828,12 @@
                 </div>
             </div>
             <div class="col-md-4 bluesec">
+                <div class="btnbox mb-3">
+                    <button class="btn-drawer">
+                        <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+                        <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                    </button>
+                </div>
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item">
                         <a class="nav-link sessiontab active" id="one-tab" data-toggle="tab" href="#one"
@@ -1012,69 +1022,43 @@
                     </div>
                     <div class="tab-pane fade p-3 text-dark" id="surveytab" role="tabpanel"
                         aria-labelledby="survey">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-title">Survey</h5>
-                                <form id="surveyResponseForm">
-                                    <!-- Question 1 -->
-                                    <div class="form-group">
-                                        <label for="question1">How satisfied are you with our services?</label>
-                                        <select class="form-control" id="question1" name="question1" required>
-                                            <option value="" disabled selected>
-                                                Select an option
-                                            </option>
-                                            <option value="verySatisfied">Very Satisfied</option>
-                                            <option value="satisfied">Satisfied</option>
-                                            <option value="neutral">Neutral</option>
-                                            <option value="unsatisfied">Unsatisfied</option>
-                                            <option value="veryUnsatisfied">
-                                                Very Unsatisfied
-                                            </option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Question 2 -->
-                                    <fieldset class="form-group">
-                                        <legend>
-                                            Which of the following programming languages do you use?
-                                        </legend>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="question2[]"
-                                                id="language1" value="java" />
-                                            <label class="form-check-label" for="language1">
-                                                Java
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="question2[]"
-                                                id="language2" value="python" />
-                                            <label class="form-check-label" for="language2">
-                                                Python
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" name="question2[]"
-                                                id="language3" value="javascript" />
-                                            <label class="form-check-label" for="language3">
-                                                JavaScript
-                                            </label>
-                                        </div>
-                                    </fieldset>
-
-                                    <!-- Question 3 -->
-                                    <div class="form-group">
-                                        <label for="question3">What suggestions do you have for improvement?</label>
-                                        <textarea class="form-control" id="question3" name="question3" rows="3"></textarea>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-primary mt-3">
-                                        Submit Survey
-                                    </button>
-                                </form>
+                        
+                        <div id="surveys-container">
+                            <div id="survey-details">
+                                <p class="text-center">Waiting for survey question.</p>
                             </div>
                         </div>
                     </div>
-                </div>
+                    </div>
+                    </div>
+                    </div>
+        <div class="row">
+            <div class="col-md-12 text-right usertest">
+                <a href="#" class="text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="24"
+                        height="24" x="0" y="0" viewBox="0 0 512 512" style="enable-background: new 0 0 512 512"
+                        xml:space="preserve" class="svg-icons">
+                        <g>
+                            <path
+                                d="M256 0C114.509 0 0 114.496 0 256c0 141.489 114.496 256 256 256 141.491 0 256-114.496 256-256C512 114.509 397.504 0 256 0zm0 476.279c-121.462 0-220.279-98.816-220.279-220.279S134.538 35.721 256 35.721c121.463 0 220.279 98.816 220.279 220.279S377.463 476.279 256 476.279z"
+                                fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
+                            <path
+                                d="M248.425 323.924c-14.153 0-25.61 11.794-25.61 25.946 0 13.817 11.12 25.948 25.61 25.948s25.946-12.131 25.946-25.948c0-14.152-11.794-25.946-25.946-25.946zM252.805 127.469c-45.492 0-66.384 26.959-66.384 45.155 0 13.142 11.12 19.208 20.218 19.208 18.197 0 10.784-25.948 45.155-25.948 16.848 0 30.328 7.414 30.328 22.915 0 18.196-18.871 28.642-29.991 38.077-9.773 8.423-22.577 22.24-22.577 51.22 0 17.522 4.718 22.577 18.533 22.577 16.511 0 19.881-7.413 19.881-13.817 0-17.522.337-27.631 18.871-42.121 9.098-7.076 37.74-29.991 37.74-61.666s-28.642-55.6-71.774-55.6z"
+                                fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
+                        </g>
+                    </svg>
+                    <span>Help</span></a>
+                <a href="javascript:void(0)" class="text-center btn-refresh">
+                    <svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="24"
+                        height="24" x="0" y="0" viewBox="0 0 438.529 438.528" style="enable-background: new 0 0 512 512"
+                        xml:space="preserve" class="svg-icons">
+                        <g>
+                            <path
+                                d="M433.109 23.694c-3.614-3.612-7.898-5.424-12.848-5.424-4.948 0-9.226 1.812-12.847 5.424l-37.113 36.835c-20.365-19.226-43.684-34.123-69.948-44.684C274.091 5.283 247.056.003 219.266.003c-52.344 0-98.022 15.843-137.042 47.536-39.021 31.689-64.715 73.035-77.087 124.048v1.997c0 2.474.903 4.617 2.712 6.423 1.809 1.809 3.949 2.712 6.423 2.712h56.814c4.189 0 7.042-2.19 8.566-6.565 7.993-19.032 13.035-30.166 15.131-33.403 13.322-21.698 31.023-38.734 53.103-51.106 22.082-12.371 45.873-18.559 71.376-18.559 38.261 0 71.473 13.039 99.645 39.115l-39.406 39.397c-3.607 3.617-5.421 7.902-5.421 12.851 0 4.948 1.813 9.231 5.421 12.847 3.621 3.617 7.905 5.424 12.854 5.424h127.906c4.949 0 9.233-1.807 12.848-5.424 3.613-3.616 5.42-7.898 5.42-12.847V36.542c0-4.949-1.796-9.23-5.42-12.848zM422.253 255.813h-54.816c-4.188 0-7.043 2.187-8.562 6.566-7.99 19.034-13.038 30.163-15.129 33.4-13.326 21.693-31.028 38.735-53.102 51.106-22.083 12.375-45.874 18.556-71.378 18.556-18.461 0-36.259-3.423-53.387-10.273-17.13-6.858-32.454-16.567-45.966-29.13l39.115-39.112c3.615-3.613 5.424-7.901 5.424-12.847 0-4.948-1.809-9.236-5.424-12.847-3.617-3.62-7.898-5.431-12.847-5.431H18.274c-4.952 0-9.235 1.811-12.851 5.431C1.807 264.844 0 269.132 0 274.08v127.907c0 4.945 1.807 9.232 5.424 12.847 3.619 3.61 7.902 5.428 12.851 5.428 4.948 0 9.229-1.817 12.847-5.428l36.829-36.833c20.367 19.41 43.542 34.355 69.523 44.823 25.981 10.472 52.866 15.701 80.653 15.701 52.155 0 97.643-15.845 136.471-47.534 38.828-31.688 64.333-73.042 76.52-124.05.191-.38.281-1.047.281-1.995 0-2.478-.907-4.612-2.715-6.427-1.81-1.799-3.953-2.706-6.431-2.706z"
+                                fill="#FFFFFF" opacity="1" data-original="#FFFFFF" class="svg-icons"></path>
+                        </g>
+                    </svg>
+                    <span>Refresh</span></a>
             </div>
         </div>
     </div>
@@ -1366,13 +1350,13 @@
     <script src="api.js"></script>
 
     <script data-script="exclude-me">
-                                                            var companyId = localStorage.companyId ?? "99485e65-724c-493e-8bc0-22b369f0edc0";
-                                                            var eventId = "9aba9784-4a14-467d-8b84-e101d5bf611f"//localStorage.eventId;
-                                                            var companySlug = localStorage.companySlug ?? "streamon_hub";
-                                                            var eventSlug = localStorage.eventSlug ?? "1ioedzcga05m";
+                                                                                var companyId = localStorage.companyId ?? "992c4eb3-e3f2-481e-b24e-1c191bb0576b";
+                                                                                var eventId = "9ae298ad-b354-4230-977a-a7b6e8ed87f6"//localStorage.eventId;
+                                                                                var companySlug = localStorage.companySlug ?? "comp_2";
+                                                                                var eventSlug = localStorage.eventSlug ?? "ffroeynafktl";
                                                         
         var pageDetailJsonUrl =
-            "https://s3.amazonaws.com/event.streamonhub.com/my_fev_company/pxfeorvg657y/console.json";
+            `https://s3.amazonaws.com/event.streamonhub.com/${companySlug}/${eventSlug}/console.json`;
                                                 var playerConfigUrl =
                                                     `https://s3.amazonaws.com/event.streamonhub.com/${companySlug}/${eventSlug}/config.json`;
         console.log({
