@@ -130,7 +130,7 @@ async function readPageJson() {
       pollQuestions = data?.pollQuestions;
       pollOptions = data?.pollOptions;
       
-      surveyQuestion = data?.surveyQuestion;
+      surveyQuestions = data?.surveyQuestions;
 
       $(".loader-section").removeClass("d-flex");
       $(".loader-section").css("display", "none");
@@ -544,10 +544,8 @@ async function refreshPage(contentOnly = false) {
           console.error(`Error parsing JSON:`, error);
         }
         let {type, action, data} = metadataText;
-        console.log({type, action, data});
 
         if(type && action) {
-          console.log("in")
           switch(type) {
             case "poll":
               if(action == "show") {
@@ -559,7 +557,7 @@ async function refreshPage(contentOnly = false) {
                   displayLivePoll(data?.poll_id);
                 }
               } else if(action == "stop") {
-                $("#surveys-container").html(`<p class="text-center">Waiting for survey question.</p>`);
+                $("#polls-container").html(`<p class="text-center">Waiting for poll question.</p>`);
               }
               break;
             case "survey":
@@ -568,7 +566,7 @@ async function refreshPage(contentOnly = false) {
                 $("#myTabContent > .tab-pane").removeClass("active");
                 $("ul#myTab > li > .nav-link#survey").addClass("active");
                 $("#myTabContent > .tab-pane#surveytab").addClass("active show");
-                if(data) {
+                if(data && data?.survey_id) {
                   displayLiveSurvey(data?.survey_id);
                 }
               } else if(action == "stop") {
@@ -664,7 +662,7 @@ function displayLivePoll(pollId) {
       }
     }
 
-    $("#polls-container").html(`
+    $("#polls-container #poll-details").html(`
         <div class="card">
             <div class="card-body">
                 <h5 class="card-title"></h5>
@@ -683,92 +681,96 @@ function displayLivePoll(pollId) {
 }
 
 function displayLiveSurvey(surveyId) {
-  if (surveyId && surveyQuestion && Object.keys(surveyQuestion).length && surveyQuestion[surveyId]) {
-    let survey = surveyQuestion[surveyId];
-    if(survey) {
-      let formElem = "";
-        let { type, question, options, isRequired } = survey;
-        let requiredField = isRequired ? "required" : "";
+  if (surveyQuestions && Object.keys(surveyQuestions).length) {
 
+    let surveyForm = "";
+
+    for(let slug in surveyQuestions) {
+        let { type, question, options, isRequired } = surveyQuestions[slug];
+        let requiredField = isRequired ? "required" : "";
+        
+        let formElem = "";
         let queField = "";
-        if (options && options.length) {
-            options.map((opt, oi) => {
-                switch (type) {
-                    case "radio":
-                        queField += `
-                                <div class="form-check">
-                                    <input class="form-check-input" type="radio" name="surveyQuestion[${surveyId}]question${surveyId}[]"
-                                        id="question${surveyId}-option${oi}" value="${oi}" ${requiredField}>
-                                    <label class="form-check-label" for="question${surveyId}-option${oi}">
-                                        ${opt}
-                                    </label>
-                                </div>
-                            `;
-                        break;
-                    case "checkbox":
-                        queField += `
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" name="surveyQuestion[${surveyId}]question${surveyId}[]"
-                                        id="question${surveyId}-option${oi}" value="${oi}" ${requiredField}>
-                                    <label class="form-check-label" for="question${surveyId}-option${oi}">
-                                        ${opt}
-                                    </label>
-                                </div>
-                            `;
-                        break;
-                    case "dropdown":
-                        queField += `
-                                <option value="${oi}">${opt}</option>
-                            `;
-                        break;
-                    default:
-                        break;
-                }
-            });
+        if (options && Object.keys(options).length) {
+          for(let optSlug in options) {
+              switch (type) {
+                  case "radio":
+                      queField += `
+                              <div class="form-check">
+                                  <input class="form-check-input" type="radio" name="radio-${slug}"
+                                      id="question1-option${optSlug}" value="${optSlug}" ${requiredField}>
+                                  <label class="form-check-label" for="question1-option${optSlug}">
+                                      ${options[optSlug]}
+                                  </label>
+                              </div>
+                          `;
+                      break;
+                  case "checkbox":
+                      queField += `
+                              <div class="form-check">
+                                  <input class="form-check-input" type="checkbox" name="checkbox-${slug}"
+                                      id="question1-option${optSlug}" value="${optSlug}" ${requiredField}>
+                                  <label class="form-check-label" for="question1-option${optSlug}">
+                                      ${options[optSlug]}
+                                  </label>
+                              </div>
+                          `;
+                      break;
+                  case "dropdown":
+                      queField += `
+                              <option value="${optSlug}">${options[optSlug]}</option>
+                          `;
+                      break;
+                  default:
+                      break;
+              }
+          }
         }
 
         switch (type) {
-            case "text":
-                formElem += `
-                        <div class="form-group">
-                            <label for="question${surveyId}">${question}</label>
-                            <input type="text" class="form-control" id="question${surveyId}" name="surveyQuestion[${surveyId}]question${surveyId}" ${requiredField}/>
-                        </div>
-                        <hr>
-                    `;
-                break;
-            case "radio":
-            case "checkbox":
-                formElem += `
-                        <fieldset class="form-group">
-                            <legend style="font-size: inherit;">${question}</legend>
-                            ${queField}
-                        </fieldset>
-                        <hr>
-                    `;
-                break;
-            case "dropdown":
-                formElem += `
-                        <div class="form-group">
-                            <label for="question${surveyId}">${question}</label>
-                            <select class="form-control" id="question${surveyId}" name="surveyQuestion[${surveyId}]question${surveyId}" ${requiredField}>
-                            ${queField}
-                            </select>
-                        </div>
-                        <hr>
-                    `;
-                break;
-            default:
-                break;
-        }
-        formElem += `<button type="submit" class="btn btn-primary mt-3">Submit Survey</button>`;
+          case "text":
+              formElem += `
+                      <div class="form-group">
+                          <label for="surveyQuestions[${slug}]-text">${question}</label>
+                          <input type="text" class="form-control" id="surveyQuestions[${slug}]-text" name="text-${slug}" ${requiredField}/>
+                      </div>
+                      <hr>
+                  `;
+              break;
+          case "radio":
+          case "checkbox":
+              formElem += `
+                      <fieldset class="form-group">
+                          <legend style="font-size: inherit;">${question}</legend>
+                          ${queField}
+                      </fieldset>
+                      <hr>
+                  `;
+              break;
+          case "dropdown":
+              formElem += `
+                      <div class="form-group">
+                          <label for="surveyQuestions[${slug}]-select">${question}</label>
+                          <select class="form-control" id="surveyQuestions[${slug}]-select" name="dropdown-${slug}" ${requiredField}>
+                          ${queField}
+                          </select>
+                      </div>
+                      <hr>
+                  `;
+              break;
+          default:
+              break;
+      }
+      surveyForm += formElem;
+    }
+    surveyForm += `<button type="submit" class="btn btn-primary mt-3">Submit Survey</button>`;
 
         $("#survey-details").html(`
           <div class="card">
               <div class="card-body">
-                  <h5 class="card-title">Survey Question ${surveyId}</h5>
-                  <form id="form-${surveyId}">
-                      ${formElem}
+                  <h5 class="card-title">Survey Question</h5>
+                  <form id="surveyResponseForm-${surveyId}">
+                      ${surveyForm}
                   </form>
               </div>
           </div>
@@ -809,10 +811,9 @@ function displayLiveSurvey(surveyId) {
       );
     }
   }
-}
 
 function submitPoll(resultJson) {
-  fetch(apiUrl + '/polls/submit', {
+  fetch(pollAPI + '/polls/submit', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -822,7 +823,7 @@ function submitPoll(resultJson) {
 }
 
 function submitSurvey(resultJson) {
-  fetch(apiUrl + '/survey/submit', {
+  fetch(surveyAPI + '/survey/submit', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -832,7 +833,7 @@ function submitSurvey(resultJson) {
 }
 
 function getPollResults(event_id, poll_id) {
-  fetch(apiUrl + `/polls/${event_id}/${poll_id}`,{
+  fetch(pollAPI + `/polls/${event_id}/${poll_id}`,{
     method: "GET"
   })
     .then(response => response.json())
@@ -841,7 +842,7 @@ function getPollResults(event_id, poll_id) {
 }
 
 function getSurveyResults(event_id, survey_id) {
-  fetch(apiUrl + `/survey/${event_id}/${survey_id}`,{
+  fetch(surveyAPI + `/survey/${event_id}/${survey_id}`,{
     method: "GET"
   })
     .then(response => response.json())
@@ -861,7 +862,8 @@ var queWebSocket = pollWebSocket = chatWebSocket = null;
 let playbackUrl = null;
 var player = globalActiveTabColor = null;
 const videoPlayer = document.getElementById("video-player");
-var apiUrl = "https://util.streamonhub.com/event-poll-api";
+var pollAPI = "https://util.streamonhub.com/event-poll-api";
+var surveyAPI = "https://util.streamonhub.com/event-survey-api";
 var pollQuestions = pollOptions = null;
 var surveyQuestions = null;
 
@@ -899,23 +901,62 @@ $(document).ready(async function() {
     };
     let pollResultJson = JSON.stringify(pollResultObj);
     submitPoll(pollResultJson);
-    $("#polls-container").html(`<p class="text-center">Your response was submitted successfully.</p>`);
+    $("#polls-container #poll-details").html(`<p class="text-center">Your response was submitted successfully.</p>`);
   });
   
   $("#surveys-container").on("submit", "form", function (e) {
     e.preventDefault();
     let survey_id = $(this).attr("id").split("-")[1];
-    let optionKey = $(this).find("input[type='radio']:checked").val();
-    let optionVal = $(this).find("input[type='radio']:checked").siblings('label').text().trim();
+    let formData = $(this).serializeArray();
+    const survey_data = formData.map(item => { 
+      let [type, name] = (item.name).split("-");
+      return { [name]: item.value, type: type }; 
+    });
+    // const extractedData = Object.values(formData).map(({ name, value }) => ({ [name]: value }));
+    // let survey_data = [];
+    // let type = $(this).find("#survey-que-type").val();
+    // switch(type) {
+    //   case "text":
+    //     var obj = { [survey_id]: $(this).find("input[type='text']").val(), type: type };
+    //     survey_data.push(obj);
+    //     break;
+    //   case "checkbox":
+    //     let ansObj = [];
+    //     $(this).find("input:checkbox:checked").each(function() {
+    //       let key = $(this).val();
+    //       let value = $(this).siblings("label").text().trim();
+    //       ansObj.push({[key]: value});
+    //     });
+    //     ansObj.push({type: type});
+    //     survey_data.push(ansObj);
+    //     break;
+    //   case "radio":
+    //     let radObj = [];
+    //     $(this).find("input:radio:checked").each(function() {
+    //       let key = $(this).val();
+    //       let value = $(this).siblings("label").text().trim();
+    //       radObj.push({[key]: value});
+    //     });
+    //     radObj.push({type: type});
+    //     survey_data.push(radObj);
+    //     break;
+    //   case "dropdown":
+    //     let key = $(this).find("select").val();
+    //     let value = $(this).find("select").siblings("label").text().trim();
+    //     survey_data.push({ [key]: value, type: type });
+    //     break;
+    //   default:
+    //     break;
+    // }
+
     let surveyResultObj = {
       event_id: eventId,
       survey_id: survey_id,
-      answer: [{[optionKey]: optionVal}],
-      is_deleted: false
+      survey_data: survey_data,
     };
     let surveyResultJson = JSON.stringify(surveyResultObj);
     submitSurvey(surveyResultJson);
-    $("#surveys-container").html(`<p class="text-center">Your response was submitted successfully.</p>`);
+    $("#surveys-container #survey-details").html(`<p class="text-center">Your response was submitted successfully.</p>`);
   });
 
   $(document).on("click", ".btn-drawer", function(e) {

@@ -1350,11 +1350,12 @@
     <script src="api.js"></script>
 
     <script data-script="exclude-me">
-                                                                                var companyId = localStorage.companyId ?? "992c4eb3-e3f2-481e-b24e-1c191bb0576b";
-                                                                                var eventId = "9ae298ad-b354-4230-977a-a7b6e8ed87f6"//localStorage.eventId;
-                                                                                var companySlug = localStorage.companySlug ?? "comp_2";
-                                                                                var eventSlug = localStorage.eventSlug ?? "ffroeynafktl";
-                                                        
+                                        var companyId = localStorage.companyId ?? "99485e65-724c-493e-8bc0-22b369f0edc0";
+                                        var eventId = localStorage.eventId ?? "9b0ece1c-662a-434a-b669-5e654570dac9";
+                                        var companySlug = localStorage.companySlug ?? "streamon_hub";
+                                        var eventSlug = localStorage.eventSlug ?? "8vinjdyb8ddm";
+                                        var userId = localStorage.userId ?? "12345";
+                                    
         var pageDetailJsonUrl =
             `https://s3.amazonaws.com/event.streamonhub.com/${companySlug}/${eventSlug}/console.json`;
                                                 var playerConfigUrl =
@@ -1364,7 +1365,11 @@
         });
     </script>
 
-    <script src="lobby.js"></script>
+    <script>
+        var script = document.createElement('script');
+        script.src = 'lobby.js?id=' + Date.now();
+        document.head.appendChild(script);
+    </script>
 </body>
 
 </html>
